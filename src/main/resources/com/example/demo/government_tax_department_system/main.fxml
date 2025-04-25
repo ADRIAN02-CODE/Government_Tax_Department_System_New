@@ -7,6 +7,7 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.text.Font?>
 
 <BorderPane fx:id="root" maxHeight="400.0" maxWidth="600.0" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.demo.government_tax_department_system.Controller">
    <left>
@@ -15,18 +16,36 @@
    <top>
       <AnchorPane prefHeight="130.0" prefWidth="423.0" BorderPane.alignment="CENTER">
          <children>
-            <Button fx:id="importButton" layoutX="35.0" layoutY="69.0" mnemonicParsing="false" onAction="#handleImportButton" text="Import File" AnchorPane.leftAnchor="35.0" AnchorPane.topAnchor="69.0" />
-            <Button fx:id="calcTaxButton" layoutX="151.0" layoutY="69.0" mnemonicParsing="false" onAction="#handleCalcTaxButton" text="Calculate Tax" AnchorPane.leftAnchor="151.0" AnchorPane.topAnchor="69.0" />
-            <Button fx:id="deleteButton" layoutX="276.0" layoutY="69.0" mnemonicParsing="false" onAction="#handleDeleteButton" text="Delete Item" AnchorPane.leftAnchor="276.0" AnchorPane.topAnchor="69.0" />
-            <Button fx:id="generateBillButton" layoutX="381.0" layoutY="69.0" mnemonicParsing="false" onAction="#handleGenerateBillButton" text="Generate Bill" AnchorPane.leftAnchor="381.0" AnchorPane.topAnchor="69.0" />
-            <Button fx:id="viewReportsButton" layoutX="494.0" layoutY="69.0" mnemonicParsing="false" onAction="#handleViewReportsButton" text="View Reports" AnchorPane.leftAnchor="494.0" AnchorPane.topAnchor="69.0" />
-            <Label layoutX="177.0" layoutY="24.0" prefHeight="18.0" prefWidth="197.0" text="Government Tax Department System" />
+            <Button fx:id="importButton" layoutX="35.0" layoutY="69.0" mnemonicParsing="false" onAction="#handleImportButton" style="-fx-border-color: black;" text="Import File" AnchorPane.leftAnchor="35.0" AnchorPane.topAnchor="69.0">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font></Button>
+            <Button fx:id="calcTaxButton" layoutX="151.0" layoutY="69.0" mnemonicParsing="false" onAction="#handleCalcTaxButton" style="-fx-border-color: black;" text="Calculate Tax" AnchorPane.leftAnchor="151.0" AnchorPane.topAnchor="69.0">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font></Button>
+            <Button fx:id="deleteButton" layoutX="276.0" layoutY="69.0" mnemonicParsing="false" onAction="#handleDeleteButton" style="-fx-border-color: black;" text="Delete Item" AnchorPane.leftAnchor="276.0" AnchorPane.topAnchor="69.0">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font></Button>
+            <Button fx:id="generateBillButton" layoutX="381.0" layoutY="69.0" mnemonicParsing="false" onAction="#handleGenerateBillButton" style="-fx-border-color: black;" text="Generate Bill" AnchorPane.leftAnchor="381.0" AnchorPane.topAnchor="69.0">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font></Button>
+            <Button fx:id="viewReportsButton" layoutX="494.0" layoutY="69.0" mnemonicParsing="false" onAction="#handleViewReportsButton" style="-fx-border-color: black;" text="View Reports" AnchorPane.leftAnchor="494.0" AnchorPane.topAnchor="69.0">
+               <font>
+                  <Font name="System Bold" size="12.0" />
+               </font></Button>
+            <Label layoutX="155.0" layoutY="26.0" prefHeight="18.0" prefWidth="289.0" text="Government Tax Department System">
+               <font>
+                  <Font name="System Bold Italic" size="16.0" />
+               </font></Label>
 
          </children>
       </AnchorPane>
    </top>
    <bottom>
-      <TableView fx:id="basketTable" prefHeight="304.0" prefWidth="423.0" BorderPane.alignment="CENTER">
+      <TableView fx:id="basketTable" prefHeight="304.0" prefWidth="423.0" style="-fx-background-color: grey;" BorderPane.alignment="CENTER">
          <columns>
             <TableColumn fx:id="codeColumn" prefWidth="63.999937415122986" text="Item Code" />
             <TableColumn fx:id="priceColumn" prefWidth="99.99999237060547" text="Internal Price" />
