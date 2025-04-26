@@ -48,10 +48,17 @@ public class Controller {
     private void handleImportButton() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Transaction File");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Text Files", "*.txt"));
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
+
         File selectedFile = fileChooser.showOpenDialog(new Stage());
 
         if (selectedFile != null) {
+            // Double-check if the selected file is a CSV file
+            if (!selectedFile.getName().toLowerCase().endsWith(".csv")) {
+                showAlert("Error", "Please select a valid CSV file.");
+                return;
+            }
+
             try (BufferedReader reader = new BufferedReader(new FileReader(selectedFile))) {
                 transactions.clear();
                 String line;
@@ -77,6 +84,7 @@ public class Controller {
             }
         }
     }
+
 
     @FXML
     private void handleCalcTaxButton() {
