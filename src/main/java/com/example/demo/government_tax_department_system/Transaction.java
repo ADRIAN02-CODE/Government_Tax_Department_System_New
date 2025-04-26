@@ -1,96 +1,62 @@
 package com.example.demo.government_tax_department_system;
 
-import javafx.beans.property.*;
-
 public class Transaction {
-    private final StringProperty itemCode;
-    private final DoubleProperty internalPrice;
-    private final DoubleProperty discount;
-    private final DoubleProperty salePrice;
-    private final IntegerProperty quantity;
-    private final StringProperty checksum;
-    private final BooleanProperty isValid;
-    private final DoubleProperty profit;
+    private String itemCode;
+    private double internalPrice;
+    private double discount;
+    private double salePrice;
+    private int quantity;
+    private String checksum;
+    private boolean isValid;
+    private double profit;
 
-    public Transaction(String itemCode, double internalPrice, double discount,
-                       double salePrice, int quantity, String checksum) {
-        this.itemCode = new SimpleStringProperty(itemCode);
-        this.internalPrice = new SimpleDoubleProperty(internalPrice);
-        this.discount = new SimpleDoubleProperty(discount);
-        this.salePrice = new SimpleDoubleProperty(salePrice);
-        this.quantity = new SimpleIntegerProperty(quantity);
-        this.checksum = new SimpleStringProperty(checksum);
-        this.isValid = new SimpleBooleanProperty(false);
-        this.profit = new SimpleDoubleProperty(0.0);
-
-        validate();
+    public Transaction(String itemCode, double internalPrice, double discount, double salePrice, int quantity, String checksum) {
+        this.itemCode = itemCode;
+        this.internalPrice = internalPrice;
+        this.discount = discount;
+        this.salePrice = salePrice;
+        this.quantity = quantity;
+        this.checksum = checksum;
+        this.isValid = validateChecksum();
     }
 
-    // Getters and setters
-    public String getItemCode() { return itemCode.get(); }
-    public double getInternalPrice() { return internalPrice.get(); }
-    public double getDiscount() { return discount.get(); }
-    public double getSalePrice() { return salePrice.get(); }
-    public int getQuantity() { return quantity.get(); }
-    public String getChecksum() { return checksum.get(); }
-    public boolean getIsValid() { return isValid.get(); }
-    public double getProfit() { return profit.get(); }
+    // Add valid field constructor
+    public Transaction(String itemCode, double internalPrice, double discount, double salePrice, int quantity, String checksum, boolean valid) {
+        this(itemCode, internalPrice, discount, salePrice, quantity, checksum);
+        this.isValid = valid && validateChecksum(); // Use CSV valid field and revalidate
+    }
 
-    public void setItemCode(String value) { itemCode.set(value); validate(); }
-    public void setInternalPrice(double value) { internalPrice.set(value); validate(); }
-    public void setDiscount(double value) { discount.set(value); validate(); }
-    public void setSalePrice(double value) { salePrice.set(value); validate(); }
-    public void setQuantity(int value) { quantity.set(value); validate(); }
-    public void setChecksum(String value) { checksum.set(value); validate(); }
+    private boolean validateChecksum() {
+        String record = String.format("%s,%.2f,%.2f,%.2f,%d", itemCode, internalPrice, discount, salePrice, quantity);
+        String calculatedChecksum = calculateMD5(record);
+        return checksum.equals(calculatedChecksum);
+    }
+
+    private String calculateMD5(String input) {
+        try {
+            java.security.MessageDigest md = java.security.MessageDigest.getInstance("MD5");
+            byte[] array = md.digest(input.getBytes());
+            StringBuilder sb = new StringBuilder();
+            for (byte b : array) {
+                sb.append(String.format("%02x", b));
+            }
+            return sb.toString();
+        } catch (java.security.NoSuchAlgorithmException e) {
+            return "";
+        }
+    }
+
     public void calculateProfit() {
-        profit.set((salePrice.get() * quantity.get() - discount.get()) -
-                (internalPrice.get() * quantity.get()));
+        this.profit = (salePrice - internalPrice) * quantity;
     }
 
-    // Property getters for JavaFX binding
-    public StringProperty itemCodeProperty() { return itemCode; }
-    public DoubleProperty internalPriceProperty() { return internalPrice; }
-    public DoubleProperty discountProperty() { return discount; }
-    public DoubleProperty salePriceProperty() { return salePrice; }
-    public IntegerProperty quantityProperty() { return quantity; }
-    public StringProperty checksumProperty() { return checksum; }
-    public BooleanProperty isValidProperty() { return isValid; }
-    public DoubleProperty profitProperty() { return profit; }
-
-    // Validate the transaction
-    private void validate() {
-        boolean valid = true;
-
-        // Check for special characters in item code
-        if (!itemCode.get().matches("[a-zA-Z0-9]+")) {
-            valid = false;
-        }
-
-        // Check for negative price
-        if (internalPrice.get() < 0 || salePrice.get() < 0 || discount.get() < 0 || quantity.get() < 0) {
-            valid = false;
-        }
-
-        // Calculate checksum and compare
-        String calculatedChecksum = calculateChecksum();
-        if (!calculatedChecksum.equals(checksum.get())) {
-            valid = false;
-        }
-
-        isValid.set(valid);
-    }
-
-    // Calculate checksum for validation
-    private String calculateChecksum() {
-        String data = String.format("%s%.2f%.2f%.2f%d",
-                itemCode.get(), internalPrice.get(), discount.get(), salePrice.get(), quantity.get());
-        int hash = data.hashCode();
-        return Integer.toHexString(hash);
-    }
-
-    @Override
-    public String toString() {
-        return String.format("%s,%.2f,%.2f,%.2f,%d,%s",
-                itemCode.get(), internalPrice.get(), discount.get(), salePrice.get(), quantity.get(), checksum.get());
-    }
+    // Getters
+    public String getItemCode() { return itemCode; }
+    public double getInternalPrice() { return internalPrice; }
+    public double getDiscount() { return discount; }
+    public double getSalePrice() { return salePrice; }
+    public int getQuantity() { return quantity; }
+    public String getChecksum() { return checksum; }
+    public boolean getIsValid() { return isValid; }
+    public double getProfit() { return profit; }
 }

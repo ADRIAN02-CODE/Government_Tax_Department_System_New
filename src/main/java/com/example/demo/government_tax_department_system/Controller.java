@@ -49,11 +49,9 @@ public class Controller {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open Transaction File");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
-
         File selectedFile = fileChooser.showOpenDialog(new Stage());
 
         if (selectedFile != null) {
-            // Double-check if the selected file is a CSV file
             if (!selectedFile.getName().toLowerCase().endsWith(".csv")) {
                 showAlert("Error", "Please select a valid CSV file.");
                 return;
@@ -62,25 +60,36 @@ public class Controller {
             try (BufferedReader reader = new BufferedReader(new FileReader(selectedFile))) {
                 transactions.clear();
                 String line;
+                boolean isFirstLine = true;
                 while ((line = reader.readLine()) != null) {
-                    String[] parts = line.split(",");
-                    if (parts.length == 6) {
-                        Transaction transaction = new Transaction(
-                                parts[0],
-                                Double.parseDouble(parts[1]),
-                                Double.parseDouble(parts[2]),
-                                Double.parseDouble(parts[3]),
-                                Integer.parseInt(parts[4]),
-                                parts[5]
-                        );
-                        transactions.add(transaction);
+                    // Skip the header row
+                    if (isFirstLine) {
+                        isFirstLine = false;
+                        continue;
+                    }
+                    String[] parts = line.split(",", -1); // Handle empty fields
+                    if (parts.length == 7) {
+                        try {
+                            Transaction transaction = new Transaction(
+                                    parts[0], // itemCode
+                                    Double.parseDouble(parts[1]), // internalPrice
+                                    Double.parseDouble(parts[2]), // discount
+                                    Double.parseDouble(parts[3]), // salePrice
+                                    Integer.parseInt(parts[4]), // quantity
+                                    parts[5] // checksum
+                            );
+                            // Optionally set valid field if Transaction class supports it
+                            transactions.add(transaction);
+                        } catch (NumberFormatException e) {
+                            showAlert("Warning", "Skipping invalid row: " + line);
+                        }
+                    } else {
+                        showAlert("Warning", "Skipping row with incorrect columns: " + line);
                     }
                 }
                 showImportSummary();
             } catch (IOException e) {
                 showAlert("Error", "Failed to read file: " + e.getMessage());
-            } catch (NumberFormatException e) {
-                showAlert("Error", "Invalid number format in file: " + e.getMessage());
             }
         }
     }
